@@ -2,14 +2,15 @@ package me.toast.engine.world.entities;
 
 import com.badlogic.ashley.core.Entity;
 import me.toast.engine.Mod;
-import me.toast.engine.world.components.*;
+import me.toast.engine.world.components.RenderComponent;
+import me.toast.engine.world.components.TransformComponent;
 
-public class RenderEntity extends Entity {
+public class Dragon extends Entity {
 
     public RenderComponent meshCom;
     public TransformComponent transform;
 
-    public RenderEntity(TransformComponent transform, RenderComponent mesh) {
+    public Dragon(TransformComponent transform, RenderComponent mesh) {
         this.add(transform);
         this.add(mesh);
 

@@ -14,18 +14,18 @@ public class Main {
         new DeathmatchMod();
 
         Mod.Init();
-            float dt = 0f, endTime, beginTime = Time.getTime();
+            float deltaTime = 0f, endTime, beginTime = Time.getTime();
             while (!Mod.Window.getShouldClose()) {
                 glfwPollEvents(); // Poll for window events. Callbacks will only be invoked during this call.
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-                Mod.Update(dt);
+                Mod.Update(deltaTime);
                 Mod.Render();
 
                 glfwSwapBuffers(Mod.Window.ID); // swap the frame buffers
 
                 endTime = Time.getTime();
-                dt = endTime - beginTime;
+                deltaTime = endTime - beginTime;
                 beginTime = Time.getTime();
             }
         Mod.Cleanup();

@@ -9,9 +9,9 @@ public class Renderer {
 
     //TODO: Transparency, sorting
     //TODO: Occlusion Culling
-    //TODO:
+    //TODO: Literally anything we want to render
 
-    private ImmutableArray<Entity> entities;
+    private final ImmutableArray<Entity> entities;
     private final ComponentMapper<TransformComponent> tm = ComponentMapper.getFor(TransformComponent.class);
     private final ComponentMapper<RenderComponent> rm = ComponentMapper.getFor(RenderComponent.class);
 
@@ -30,6 +30,7 @@ public class Renderer {
     }
 
     public void Cleanup() {
-
+        for (Entity entity : entities)
+            rm.get(entity).mesh.Cleanup();
     }
 }

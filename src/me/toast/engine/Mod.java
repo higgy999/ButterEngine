@@ -5,6 +5,7 @@ import me.toast.engine.rendering.Renderer;
 import me.toast.engine.scene.Camera;
 import me.toast.engine.ui.UserInterface;
 import me.toast.engine.window.Window;
+import me.toast.engine.world.systems.Systems;
 
 public abstract class Mod {
 
@@ -35,15 +36,16 @@ public abstract class Mod {
     public static void Init() {
         Window = new Window(1280, 720);
         Ashley = new Engine();
+        Systems.AddEntitySystems();
         RenderEngine = new Renderer(Ashley);
         Ultralight = new UserInterface(Window);
         LOADED_MOD.M_Init();
     } //Initialize systems, texture, models, assets, etc.
 
-    public static void Update(float dt) {
-        Ashley.update(dt);
+    public static void Update(float deltaTime) {
+        Ashley.update(deltaTime);
         Ultralight.Update();
-        LOADED_MOD.M_Update(dt);
+        LOADED_MOD.M_Update(deltaTime);
     } //Handle Input and then update game logic
 
     public static void Render() {
@@ -53,6 +55,7 @@ public abstract class Mod {
     } //Draw Stuff
 
     public static void Cleanup() {
+        RenderEngine.Cleanup();
         Ashley.removeAllEntities();
         Ashley.removeAllSystems();
         Window.Cleanup();
@@ -64,7 +67,7 @@ public abstract class Mod {
     } //Destroy systems, texture, models, assets, etc.
 
     public abstract void M_Init();
-    public abstract void M_Update(float dt);
+    public abstract void M_Update(float deltaTime);
     public abstract void M_Render();
     public abstract void M_Cleanup();
 }
