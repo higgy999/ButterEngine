@@ -19,8 +19,7 @@ public class Window {
     public int Width, Height;
     public Input InputEvents;
     public GLCapabilities Capabilities;
-    public int Delta;
-    
+
     public Window(int width, int height) {
         this.Width = width; this.Height = height;
         // Set up an error callback. The default implementation
@@ -71,15 +70,8 @@ public class Window {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set the clear color
     }
 
-    long lastTime = System.nanoTime();
-    public void Update() {
-        glfwSwapBuffers(Mod.Window.ID); // swap the frame buffers
-
-        //Update Delta
-        long time = System.nanoTime();
-        Delta = (int) ((time - lastTime) / 1000000);
-        lastTime = time;
-    }
+    public boolean getShouldClose() { return glfwWindowShouldClose(ID); }
+    public void setShouldClose(boolean value) { glfwSetWindowShouldClose(ID, value); }
     
     private void SetCallbacks() {
         // Set up a key callback. It will be called every time a key is pressed, repeated or released.
