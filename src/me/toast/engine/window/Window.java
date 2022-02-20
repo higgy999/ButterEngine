@@ -9,7 +9,8 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -72,6 +73,9 @@ public class Window {
 
     public boolean getShouldClose() { return glfwWindowShouldClose(ID); }
     public void setShouldClose(boolean value) { glfwSetWindowShouldClose(ID, value); }
+    public void Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); /* Clear the framebuffer. */ }
+    public void PollEvents() { glfwPollEvents();  /* Poll for window events. Callbacks will only be invoked during this call. */ }
+    public void SwapBuffers() { glfwSwapBuffers(ID); /* Swap the frame buffers. */}
     
     private void SetCallbacks() {
         // Set up a key callback. It will be called every time a key is pressed, repeated or released.
