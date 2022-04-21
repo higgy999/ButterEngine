@@ -14,6 +14,7 @@ public class Main {
             Time.Init();
             while (!Mod.Window.getShouldClose()) {
                 Mod.Window.PollEvents();
+                Mod.Ultralight.webController.update();
                 Mod.Window.Clear();
 
                 Mod.Update(Time.deltaTime);
