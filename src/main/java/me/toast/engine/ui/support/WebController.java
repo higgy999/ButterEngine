@@ -24,9 +24,19 @@ import com.labymedia.ultralight.config.*;
 import com.labymedia.ultralight.gpu.*;
 import com.labymedia.ultralight.javascript.*;
 import me.toast.engine.Mod;
+import me.toast.engine.rendering.Vertex;
+import me.toast.engine.ui.HTMLRenderMesh;
 import me.toast.engine.ui.input.*;
 import me.toast.engine.ui.listener.*;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -45,6 +55,7 @@ public class WebController {
     private InputAdapter inputAdapter;
 
     private UltralightOpenGLGPUDriverNative driver;
+    private HTMLRenderMesh mesh;
 
     private long lastJavascriptGarbageCollections;
 
@@ -77,7 +88,7 @@ public class WebController {
         this.renderer = UltralightRenderer.create();
         this.renderer.logMemoryUsage();
 
-        this.view = renderer.createView(Mod.LOADED_MOD.Window.Width, Mod.LOADED_MOD.Window.Height,
+        this.view = renderer.createView(Mod.Window.Width, Mod.Window.Height,
                 new UltralightViewConfig()
                         .isAccelerated(true)
                         .initialDeviceScale(1.0)
@@ -91,6 +102,13 @@ public class WebController {
         this.lastJavascriptGarbageCollections = 0;
 
         this.inputAdapter = new InputAdapter(view);
+
+        mesh = new HTMLRenderMesh(new Vertex[]{
+                new Vertex(new Vector3f(-1, 1, 0)),
+                new Vertex(new Vector3f(-1, -1, 0)),
+                new Vertex(new Vector3f(1, 1, 0)),
+                new Vertex(new Vector3f(1, -1, 0))
+        });
     }
 
     /**
@@ -159,11 +177,59 @@ public class WebController {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-        this.renderHtmlTexture(this.view, this.window);
+        this.renderHtmlTexture(this.view);
         glfwMakeContextCurrent(window);
 
     }
 
+    public boolean getIsLoading() {
+        return view.isLoading();
+    }
+
+    public void SaveFramebuffer() {
+        glActiveTexture(GL_TEXTURE0);
+        driver.bindTexture(0, view.renderTarget().getTextureId());
+
+        int format = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT);
+        int width = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH);
+        int height = glGetTexLevelParameteri(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT);
+        int channels = 4;
+        if (format == GL_RGB)
+            channels = 3;
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * channels);
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        glGetTexImage(GL_TEXTURE_2D, 0, format, GL_UNSIGNED_BYTE, buffer);
+
+        for (int x = 0; x < width; ++x) {
+            for (int y = 0; y < height; ++y) {
+                int i = (x + y * width) * channels;
+
+                int r = buffer.get(i) & 0xFF;
+                int g = buffer.get(i + 1) & 0xFF;
+                int b = buffer.get(i + 2) & 0xFF;
+                int a = 255;
+                if (channels == 4)
+                    a = buffer.get(i + 3) & 0xFF;
+
+                image.setRGB(x, y, (a << 24) | (r << 16) | (g << 8) | b);
+            }
+        }
+
+        try {
+            ImageIO.write(image, "PNG", new File("out.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void renderHtmlTexture(UltralightView view) {
+        driver.setActiveWindow(window);
+        mesh.Render(view, driver);
+    }
+
+    @Deprecated
     private void renderHtmlTexture(UltralightView view, long window) {
         driver.setActiveWindow(window);
         long text = view.renderTarget().getTextureId();

@@ -75,7 +75,7 @@ public class UserInterface {
         inputAdapter = webController.getInputAdapter();
 
         inputAdapter.focusCallback(window, glfwGetWindowAttrib(window, GLFW_FOCUSED) != 0);
-        SetScaling(window);
+        //SetScaling(window);
 
         setActiveGUI(new GUI(true, "example.html"));
     }
@@ -134,7 +134,10 @@ public class UserInterface {
     }
 
     public void Render() {
-        webController.render();
+        if (!webController.getIsLoading()) {
+            webController.render();
+            webController.SaveFramebuffer();
+        }
     }
 
     public void Cleanup() {
