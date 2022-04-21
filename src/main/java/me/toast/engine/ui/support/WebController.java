@@ -27,10 +27,9 @@ import me.toast.engine.Mod;
 import me.toast.engine.ui.input.*;
 import me.toast.engine.ui.listener.*;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL30;
 
-import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Class used for controlling the WebGUI rendered on top of the OpenGL GUI.
@@ -146,6 +145,7 @@ public class WebController {
     public void render() {
         this.driver.setActiveWindow(this.window);
         glfwMakeContextCurrent(window);
+        //These lines cause the screen to go black, some stuff renders from Ultralight if we do this, but text doesn't
         glPushAttrib(GL_ENABLE_BIT | GL_COLOR_BUFFER_BIT | GL_TRANSFORM_BIT);
 
         if (this.driver.hasCommandsPending()) {
@@ -156,8 +156,8 @@ public class WebController {
 
         glPopAttrib();
 
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
         this.renderHtmlTexture(this.view, this.window);
         glfwMakeContextCurrent(window);
