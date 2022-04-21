@@ -108,7 +108,7 @@ public class UserInterface {
         }
 
         //webController.loadURL("file:///" + newGUI.pathToHTML);
-        webController.loadURL("https://www.youtube.com");
+        webController.loadURL("https://higgy999.github.io");
 
     }
 

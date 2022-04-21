@@ -14,7 +14,7 @@ public abstract class Mod {
 
     public static Window Window;
     public static Engine Ashley;
-    public static Physics JBullet;
+    //public static Physics JBullet;
     public static UserInterface Ultralight;
 
     public Camera Camera;
@@ -34,8 +34,8 @@ public abstract class Mod {
     public static void Init() {
         Window = new Window(1280, 720);
         Ashley = new Engine();
-        JBullet = new Physics();
-        //Ultralight = new UserInterface(Window);
+        //JBullet = new Physics();
+        Ultralight = new UserInterface(Window);
         LOADED_MOD.M_Init();
     } //Initialize systems, texture, models, assets, etc.
 
@@ -43,22 +43,22 @@ public abstract class Mod {
         Ashley.update(Window.Delta);
 
         Window.Update();
-        JBullet.Update();
-        //Ultralight.Update();
+        //JBullet.Update();
+        Ultralight.Update();
         LOADED_MOD.M_Update();
     } //Handle Input and then update game logic
 
     public static void Render() {
-        //Ultralight.Render();
+        Ultralight.Render();
         LOADED_MOD.M_Render();
     } //Draw Stuff
 
     public static void Cleanup() {
         Ashley.removeAllEntities();
         Ashley.removeAllSystems();
-        JBullet.Cleanup();
+        //JBullet.Cleanup();
         Window.Cleanup();
-        //Ultralight.Cleanup();
+        Ultralight.Cleanup();
         AssetPool.CleanupAll();
 
         LOADED_MOD.M_Cleanup();

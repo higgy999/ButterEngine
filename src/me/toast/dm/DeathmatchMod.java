@@ -20,7 +20,7 @@ public class DeathmatchMod extends Mod {
     public RenderEntity test;
 
     RenderSystem renderSystem = new RenderSystem();
-    RigidBodySystem rigidBodySystem = new RigidBodySystem();
+    //RigidBodySystem rigidBodySystem = new RigidBodySystem();
 
     public DeathmatchMod() {
         super("DMTest",
@@ -38,7 +38,7 @@ public class DeathmatchMod extends Mod {
         Camera.setProjection((float) Math.toRadians(90f), (float) Window.Width / (float) Window.Height, 0.1f, 1000f);
 
         Ashley.addSystem(renderSystem);
-        Ashley.addSystem(rigidBodySystem);
+        //Ashley.addSystem(rigidBodySystem);
     }
 
         @Override
