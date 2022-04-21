@@ -33,7 +33,7 @@ public class UltralightStandardLogger implements UltralightLogger {
      * new lines, so if you want really pretty log output reformat the string accordingly.
      * <p>
      * This logger is <b>NOT</b> called for {@code console.log} messages, see {@link
-     * com.labymedia.ultralight.lwjgl3.opengl.listener.UIViewListener#onAddConsoleMessage(MessageSource, MessageLevel, String, long, long, String)} for that
+     * me.toast.engine.ui.listener.UIViewListener#onAddConsoleMessage(MessageSource, MessageLevel, String, long, long, String)} for that
      * instead.
      *
      * @param level   The level of the message
@@ -42,17 +42,9 @@ public class UltralightStandardLogger implements UltralightLogger {
     @Override
     public void logMessage(UltralightLogLevel level, String message) {
         switch (level) {
-            case ERROR:
-                System.err.println("[Ultralight/ERR] " + message);
-                break;
-
-            case WARNING:
-                System.err.println("[Ultralight/WARN] " + message);
-                break;
-
-            case INFO:
-                System.out.println("[Ultralight/INFO] " + message);
-                break;
+            case ERROR -> System.err.println("[Ultralight/ERR] " + message);
+            case WARNING -> System.err.println("[Ultralight/WARN] " + message);
+            case INFO -> System.out.println("[Ultralight/INFO] " + message);
         }
     }
 }

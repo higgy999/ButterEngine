@@ -79,7 +79,7 @@ setInterval(() => {
 }, 1000);
 
 // Import the interaction class
-const JSInteraction = java.importClass("com.labymedia.ultralight.lwjgl3.opengl.js.JSInteraction");
+const JSInteraction = java.importClass("me.toast.engine.ui.js.JSInteraction");
 
 // Instantiate using the varargs constructor
 const interaction = new JSInteraction("Hello, World!", "How are you doing?", "I hope you are fine.");
