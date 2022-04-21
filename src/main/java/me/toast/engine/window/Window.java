@@ -68,7 +68,9 @@ public class Window {
         InputEvents = new Input();
         SetCallbacks();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set the clear color
+        //glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // Set the clear color
+        //From the example, does this even make a difference
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set the clear color
     }
 
     public boolean getShouldClose() { return glfwWindowShouldClose(ID); }
