@@ -59,6 +59,7 @@ public class Input {
                     Mod.Cam.setProjection((float) Math.toRadians(45f), (float) width/ (float) height, 0.1f, 1000f);
                     if (Mod.Ultralight != null) {
                         Mod.Ultralight.webController.resize(width, height);
+                        //TODO: Fix Ultralight Scaling
                     }
                 }
             }

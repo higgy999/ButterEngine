@@ -3,20 +3,26 @@ package me.toast.engine.ui;
 import com.labymedia.ultralight.*;
 import com.labymedia.ultralight.gpu.*;
 import com.labymedia.ultralight.os.OperatingSystem;
+import me.toast.engine.Mod;
 import me.toast.engine.ui.input.*;
 import me.toast.engine.ui.support.*;
 import me.toast.engine.window.Input;
 import me.toast.engine.window.Window;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.Callback;
+import org.lwjgl.system.MemoryStack;
 
 import java.io.IOException;
+import java.nio.IntBuffer;
 import java.nio.file.*;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glViewport;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public class UserInterface {
 
@@ -69,12 +75,62 @@ public class UserInterface {
         inputAdapter = webController.getInputAdapter();
 
         inputAdapter.focusCallback(window, glfwGetWindowAttrib(window, GLFW_FOCUSED) != 0);
+        SetScaling(window);
 
         setActiveGUI(new GUI(true, "example.html"));
     }
 
+    public void SetScaling(long window) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            // Update window size for the first time
+            IntBuffer sizeBuffer = stack.callocInt(2);
+
+            // Retrieve the size into the int buffer
+            glfwGetWindowSize(window, sizeBuffer.slice().position(0), sizeBuffer.slice().position(1));
+
+            // Update the size
+            //updateSize(window, sizeBuffer.get(0), sizeBuffer.get(1));
+            glViewport(0, 0, sizeBuffer.get(0), sizeBuffer.get(1));
+            webController.resize(sizeBuffer.get(0), sizeBuffer.get(1));
+
+            /*
+             * Following snippet disabled due to GLFW bug, glfwGetWindowContentScale returns invalid values!
+             *
+             * See https://github.com/glfw/glfw/issues/1811.
+             */
+            // Update scale for the first time
+            // FloatBuffer scaleBuffer = stack.callocFloat(2);
+
+            // Retrieve the scale into the float buffer
+            // glfwGetWindowContentScale(window,
+            //        (FloatBuffer) scaleBuffer.slice().position(0), (FloatBuffer) scaleBuffer.slice().position(1));
+
+            // Retrieve framebuffer size for scale calculation
+            IntBuffer framebufferSizeBuffer = stack.callocInt(2);
+
+            // Retrieve the size into the int buffer
+            glfwGetFramebufferSize(window, framebufferSizeBuffer.slice().position(0), sizeBuffer.slice().position(1));
+
+            // Calculate scale
+            float xScale = ((float) (framebufferSizeBuffer.get(0))) / ((float) (sizeBuffer.get(0)));
+            float yScale = ((float) (framebufferSizeBuffer.get(1))) / ((float) (sizeBuffer.get(1)));
+
+            // Fix up scale in case it gets corrupted... somehow
+            if (xScale == 0.0f) {
+                xScale = 1.0f;
+            }
+
+            if (yScale == 0.0f) {
+                yScale = 1.0f;
+            }
+
+            // Update the scale
+            inputAdapter.windowContentScaleCallback(window, xScale, yScale);
+        }
+    }
+
     public void Update() {
-        webController.update();
+        //webController.update();
     }
 
     public void Render() {
@@ -106,9 +162,8 @@ public class UserInterface {
             input.WindowFocusCallback.set(window);
         }
 
+        webController.loadURL("https://higgy999.github.io");
         //webController.loadURL("file:///" + newGUI.pathToHTML);
-        webController.loadURL("https://www.youtube.com");
-
     }
 
     /**
